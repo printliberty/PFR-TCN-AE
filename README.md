@@ -34,7 +34,7 @@ OFFLINE TRAINING AND CALIBRATION
    - causally impute gaps of at most 10 samples (forward fill);
    - discard windows with remaining missing values or time gaps exceeding
      1.5 sampling intervals.
-2. Select 23 reconstruction targets and 18 auxiliary inputs by mutual information
+2. Select 23 reconstruction targets and 17 auxiliary inputs by mutual information
    (threshold 0.2), giving 41 model inputs.
 3. Define the detection periods chronologically: training (1 Jan - 10 Jun 2024),
    healthy calibration (July 2024), and online evaluation (1 Aug - 31 Dec 2024).
@@ -44,9 +44,9 @@ OFFLINE TRAINING AND CALIBRATION
    lower bound; perform conformal calibration on the 10% split and construct the
    power feasible region F(x*) in Eq. (4).
 6. For seeds 42, 52, 62, 72, and 82, train PFR-TCN-AE with
-       L = L_data + lambda_e * L_pfr,
-   where L_pfr is the SoftPlus barrier (tau = 10, m = 0.05) and lambda_e is the
-   linear warm-up weight (lambda_max = 1e-3, E_w = 20 epochs).
+       ℒ = ℒ_data + λ_e ℒ_pfr,
+   where ℒ_pfr is the SoftPlus barrier (tau = 10, m = 0.05) and λ_e is the
+   linear warm-up weight (λ_max = 1e-3, E_w = 20 epochs).
 7. From the independent healthy calibration set, estimate the residual mean mu,
    the Ledoit-Wolf covariance Sigma, the initial threshold
    T_0 = F_cal^(-1)(1 - alpha), the peak gate G_0.95 = Q_0.95(M_cal), and the
@@ -61,10 +61,10 @@ ONLINE CAUSAL MONITORING
    b. Reconstruct the targets, obtain Yhat_t, and compute e_t = Y_t - Yhat_t.
    c. Calculate the Mahalanobis distance
         M_t = sqrt((e_t - mu)^T * Sigma^(-1) * (e_t - mu)).
-   d. Form the strictly causal reference set (denoted M_t in the text)
-        R_t = {M_i : t-W <= i < t and M_i < T_0}.
-   e. If |R_t| < N_min, set tau_t = T_0; otherwise set tau_t to the
-      (1-alpha) KDE quantile of R_t; update every 5 min and hold constant
+   d. Form the strictly causal reference set (denoted ℳ_t in the manuscript)
+        ℳ_t = {M_i : t-W <= i < t and M_i < T_0}.
+   e. If |ℳ_t| < N_min, set tau_t = T_0; otherwise set tau_t to the
+      (1-alpha) KDE quantile of ℳ_t; update every 5 min and hold constant
       between updates.
    f. Set the candidate-entry threshold
         tau_tilde_t = gamma_0.93 * max(tau_t, epsilon).
@@ -111,7 +111,7 @@ The SCADA and maintenance-log data cannot be made publicly available because of 
 
 ## Citation
 
-Jin et al., Early fault detection in key wind turbine components under varying operating conditions using power-feasible-region-constrained temporal convolutional autoencoder, 2026.
+Jin et al., Early fault detection in key wind turbine components under varying operating conditions using a power-feasible-region regularized temporal convolutional autoencoder, 2026.
 
 ## Suggestions and Problem Feedback
 
